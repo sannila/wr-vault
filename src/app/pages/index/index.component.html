@@ -1,0 +1,3 @@
+<app-header (menuClick)="openMenu($event)" [isMenuOpen]="isMenuOpen"></app-header>
+<app-side-nav [sidebarVisible]="isMenuOpen" (onCloseMenu)="onClose($event)"></app-side-nav>
+<p>index works!</p>

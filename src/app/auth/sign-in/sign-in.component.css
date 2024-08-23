@@ -1,0 +1,49 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+p-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+}
+
+.p-card-header {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #ffffff;
+  background-color: #d3e9b2;
+  border-top-right-radius: 7px;
+  border-top-left-radius: 7px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.input_section{
+    margin-bottom: 1rem;
+}
+
+.invalid-feedback{
+    color: red;
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.serverError{
+    text-align: center;
+    margin-bottom: 1rem;
+    color: red;
+}

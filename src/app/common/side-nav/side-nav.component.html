@@ -1,0 +1,11 @@
+<p-sidebar [(visible)]="sidebarVisible" (onHide)="onClose()">
+    <ng-template pTemplate="header">
+        <span class="font-semibold text-xl">WR-Vault</span>
+    </ng-template>
+    <p>
+        Lorem ipsum dolor sit amet...
+    </p>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-sign-out" [rounded]="true" [raised]="true" severity="secondary" (onClick)="onLogout()" />
+    </ng-template>
+</p-sidebar>
