@@ -3,6 +3,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { Button, ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-side-nav',
@@ -14,6 +15,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 export class SideNavComponent implements OnInit {
   @Input() sidebarVisible: boolean = false;
   @Output() onCloseMenu = new EventEmitter<boolean>();
+  username = environment.username;
 
   constructor(private router: Router, @Inject(DOCUMENT) private document: Document) {
     // const localStorage = this.document.defaultView?.localStorage;

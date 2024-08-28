@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { LoaderComponent } from '../../common/loader/loader.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { error } from 'console';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sign-in',
@@ -80,6 +81,10 @@ export class SignInComponent implements OnInit {
               console.log('res', res);
               localStorage.setItem('authToken', res.token);
               localStorage.setItem('email', this.loginForm.get('email')?.value);
+              environment.userEmail = res.user.email;
+              environment.role = res.user.role;
+              environment.userID = res.user.user_id;
+              environment.username = res.user.username;
               this.router.navigate(['index']);
             }
           },

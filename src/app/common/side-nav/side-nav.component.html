@@ -1,6 +1,7 @@
-<p-sidebar [(visible)]="sidebarVisible" (onHide)="onClose()">
+<p-sidebar [(visible)]="sidebarVisible" (onHide)="onClose()" [showCloseIcon]="false">
     <ng-template pTemplate="header">
         <span class="font-semibold text-xl">WR-Vault</span>
+        <span>{{username}}</span>
     </ng-template>
     <p>
         Lorem ipsum dolor sit amet...
