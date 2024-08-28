@@ -138,11 +138,11 @@
                             <p>{{item.entry_name}}</p>
                         } -->
           } @else {
-            <p-messages severity="error">
-              <ng-template pTemplate>
-                <div class="ml-2">No Entries Found</div>
-              </ng-template>
-            </p-messages>
+          <p-messages severity="error">
+            <ng-template pTemplate>
+              <div class="ml-2">No Entries Found</div>
+            </ng-template>
+          </p-messages>
           }
         </p-accordionTab>
         } } @else {
@@ -383,4 +383,49 @@
     </ng-template>
   </p-dialog>
   }
+
+  <!-- Get authentication -->
+  <p-dialog
+    [closable]="false"
+    [modal]="true"
+    [(visible)]="authDialog"
+    [style]="{ width: '25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap"> Authenticate </span>
+      </div>
+    </ng-template>
+    <div class="flex align-items-center gap-3 mb-3">
+      <div class="input_section">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-book"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            placeholder="Entry your password"
+            [(ngModel)]="authPassword"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="footer_button_container">
+        <p-button
+          label="Cancel"
+          [raised]="true"
+          [text]="true"
+          (onClick)="onCancelAuthdialog()"
+        />
+        <p-button
+          [label]="isUpdate ? 'Update' : 'Save'"
+          severity="primary"
+          [raised]="true"
+          (onClick)="onAuthenticate()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
 </div>

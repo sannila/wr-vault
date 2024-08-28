@@ -19,6 +19,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 
+
 import {
   FormBuilder,
   FormControl,
@@ -66,6 +67,8 @@ export class IndexComponent implements OnInit {
   entryDialog: boolean = false;
   isUpdate: boolean = false;
   updateEntryId: number | null = null;
+  authDialog: boolean = false;
+  authPassword: string | null = null;
 
   newVaultForm!: FormGroup;
   newFolderForm!: FormGroup;
@@ -214,12 +217,21 @@ export class IndexComponent implements OnInit {
     this.actionValue = null;
   }
 
+  onCancelAuthdialog(){
+    this.authDialog = false;
+    this.actionValue = null;
+  }
+
   showVaultDialog() {
     this.vaultDialog = true;
   }
 
   onCancelVaultdialog() {
     this.vaultDialog = false;
+  }
+
+  onAuthenticate(){
+
   }
 
   onSaveVault() {
@@ -331,6 +343,7 @@ export class IndexComponent implements OnInit {
           this.isUpdate = true;
           break;
         case 'password':
+          this.authDialog = true;
           break;
         case 'delete':
           this.confirmDialog(event, entrie.entry_id);
