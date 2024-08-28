@@ -1,28 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { User } from '../models/model';
-import { tap } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
   private baseURL = 'http://localhost:5000/api/';
-  constructor(private http: HttpClient) {}
+  localStorage: any;
+  constructor(
+    private http: HttpClient,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    this.localStorage = document.defaultView?.localStorage;
+  }
 
   private createHeaders(): HttpHeaders {
-    const authToken = localStorage.getItem('authToken');
-    let headers = new HttpHeaders({
+    let headers: HttpHeaders = new HttpHeaders();
+
+    headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Cross-Origin-Resource-Policy': 'cross-origin',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     });
-    if (authToken) {
-      headers = headers.set('Authorization', 'Bearer ' + authToken);
+
+    if (this.localStorage) {
+      const authToken = localStorage.getItem('authToken');
+      if (authToken) {
+        headers = headers.set('Authorization', 'Bearer ' + authToken);
+      }
     }
+
     return headers;
   }
 
@@ -31,6 +44,8 @@ export class HttpService {
     const headers = this.createHeaders();
     return this.http.get<any>(this.baseURL + endPoint, { headers });
   }
+
+  
 
   // post request
   post(endPoint: string, data: User): Observable<any> {

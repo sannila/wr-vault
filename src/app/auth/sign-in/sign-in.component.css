@@ -15,15 +15,18 @@ p-card {
 
 .p-card-header {
   text-align: center;
-  font-size: 24px;
+  font-size: 32px;
   margin-bottom: 20px;
   border: 1px solid #ffffff;
   background-color: #d3e9b2;
   border-top-right-radius: 7px;
   border-top-left-radius: 7px;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 2rem;
   font-weight: bold;
+}
+
+.p-card-content {
+  padding: 0;
 }
 
 .input_section{
@@ -39,7 +42,7 @@ p-card {
 .button-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .serverError{
@@ -47,3 +50,5 @@ p-card {
     margin-bottom: 1rem;
     color: red;
 }
+
+

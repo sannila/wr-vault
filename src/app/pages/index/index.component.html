@@ -1,3 +1,355 @@
-<app-header (menuClick)="openMenu($event)" [isMenuOpen]="isMenuOpen"></app-header>
-<app-side-nav [sidebarVisible]="isMenuOpen" (onCloseMenu)="onClose($event)"></app-side-nav>
-<p>index works!</p>
+<app-header
+  (menuClick)="openMenu($event)"
+  [isMenuOpen]="isMenuOpen"
+></app-header>
+<app-side-nav
+  [sidebarVisible]="isMenuOpen"
+  (onCloseMenu)="onClose($event)"
+></app-side-nav>
+<div class="container">
+  <div class="button_container">
+    <!-- <p-button label="Add Folder" [link]="true"></p-button> -->
+    <p-button
+      label="Add Vault"
+      icon="pi pi-wallet"
+      iconPos="left"
+      [raised]="true"
+      (onClick)="showVaultDialog()"
+    />
+  </div>
+  <!-- accordion for vault -->
+  <p-accordion [activeIndex]="activeIndex">
+    @for (item of vault_list; track $index) {
+    <p-accordionTab
+      [header]="item.vault_name"
+      (selectedChange)="getParentFolderlist(item.vault_id)"
+    >
+      <div class="button_container">
+        <!-- <p-button label="Add Folder" [link]="true"></p-button> -->
+        <p-button
+          label="Add Folder"
+          icon="pi pi-folder-open"
+          iconPos="left"
+          [raised]="true"
+          (onClick)="showDialog(item.vault_id, 'folder')"
+        />
+      </div>
+      <!-- <p-tree class="w-full md:w-30rem" [value]="folder_list" (onNodeSelect)="onnodeSelect($event)"></p-tree> -->
+
+      <!-- accordion for parent folder -->
+      <p-accordion
+        class="w-full"
+        (activeIndexChange)="activeFolderIndexChange($event)"
+        [activeIndex]="folderIndex"
+      >
+        @if(parentFolderList.length > 0) { @for (item of parentFolderList; track
+        $index) {
+        <p-accordionTab
+          (selectedChange)="get_parentfolder_entries(item.folder_id)"
+        >
+          <ng-template pTemplate="header">
+            <span class="flex align-items-center gap-2 w-full">
+              <i class="pi pi-folder-open"></i>
+              <span class="font-bold white-space-nowrap">
+                {{ item.folder_name }}
+              </span>
+              <i class="pi pi-add ml-auto mr-2"></i>
+            </span>
+          </ng-template>
+          <div class="button_container">
+            <!-- <p-button label="Add Folder" [link]="true"></p-button> -->
+
+            <p-button
+              label="Add Sub-Folder"
+              icon="pi pi-folder-open"
+              iconPos="left"
+              [raised]="true"
+              (onClick)="showDialog(item.folder_id, 'subFolder')"
+            />
+            <p-button
+              label="Add Entry"
+              icon="pi pi-add"
+              [text]="true"
+              [raised]="true"
+              (onClick)="showEntryDialog(item.folder_id)"
+            />
+          </div>
+
+          <!-- accordian for sub folder -->
+          @if(subfolderList1.length > 0){
+          <p-accordion
+            [activeIndex]="subfolderIndex"
+            (activeIndexChange)="activeSubfolderIndexChange($event)"
+          >
+            @for (item of subfolderList1; track $index) {
+            <p-accordionTab
+              [header]="item.folder_name"
+              (selectedChange)="get_subfolder_entries(item.folder_id)"
+            >
+              @if(subfolderEntrieList.length > 0){ @for (item of entrieList;
+              track $index) {
+              <p>{{ item.entry_name }}</p>
+              } } @else {
+              <h4>No Entries Found</h4>
+              }
+            </p-accordionTab>
+            }
+          </p-accordion>
+          } @if(entrieList.length > 0){
+
+          <p-table [value]="entrieList">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Entry Name</th>
+                <th>Website URL</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Notes</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-entrie>
+              <tr>
+                <td>{{ entrie.entry_name }}</td>
+                <td>{{ entrie.url }}</td>
+                <td>{{ entrie.username }}</td>
+                <td>{{ entrie.password }}</td>
+                <td>{{ entrie.notes }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <!-- @for (item of entrieList; track $index) {
+                            <p>{{item.entry_name}}</p>
+                        } -->
+          } @else {
+          <h4>No Entries found</h4>
+          }
+        </p-accordionTab>
+        } } @else {
+        <h4>No Folder to list</h4>
+        }
+      </p-accordion>
+    </p-accordionTab>
+    }
+  </p-accordion>
+
+  @if(newFolderForm){
+  <p-dialog
+    [modal]="true"
+    [(visible)]="visibleDialog"
+    [style]="{ width: '25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap"> New Folder </span>
+      </div>
+    </ng-template>
+    <div class="flex align-items-center gap-3 mb-3">
+      <form [formGroup]="newFolderForm" (ngSubmit)="onSaveFolder()">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-folder-open"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            placeholder="Folder Name"
+            formControlName="folder_name"
+          />
+        </p-inputGroup>
+      </form>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="footer_button_container">
+        <p-button
+          label="Cancel"
+          [raised]="true"
+          [text]="true"
+          (onClick)="onCanceldialog()"
+        />
+        <p-button
+          label="Save"
+          severity="primary"
+          [raised]="true"
+          (onClick)="onSaveFolder()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
+  } @if(newVaultForm){
+  <p-dialog
+    [modal]="true"
+    [(visible)]="vaultDialog"
+    [style]="{ width: '25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap"> New Vault </span>
+      </div>
+    </ng-template>
+    <div class="flex align-items-center gap-3 mb-3">
+      <form [formGroup]="newVaultForm" (ngSubmit)="onSaveVault()">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-folder-open"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            placeholder="Vault Name"
+            formControlName="vault_name"
+          />
+        </p-inputGroup>
+      </form>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="footer_button_container">
+        <p-button
+          label="Cancel"
+          [raised]="true"
+          [text]="true"
+          (onClick)="onCancelVaultdialog()"
+        />
+        <p-button
+          label="Save"
+          severity="primary"
+          [raised]="true"
+          (onClick)="onSaveVault()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
+  } @if(newEntryForm){
+  <p-dialog
+    [modal]="true"
+    [(visible)]="entryDialog"
+    [style]="{ width: '25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap"> New Entry </span>
+      </div>
+    </ng-template>
+
+    <div class="flex align-items-center gap-3 mb-3">
+      @if(entryErrorMessage != ''){
+      <div class="serverError">
+        {{ entryErrorMessage }}
+      </div>
+      }
+
+      <form [formGroup]="newEntryForm">
+        <div class="input_section">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-book"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Entry Name"
+              formControlName="entry_name"
+            />
+          </p-inputGroup>
+          @if(entryFormControl['entry_name'].touched &&
+          entryFormControl['entry_name'].invalid){
+          <div class="form_error">
+            @if(entryFormControl['entry_name'].errors!['required']){ Pleaes
+            provide entry name }
+          </div>
+          }
+        </div>
+
+        <div class="input_section">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Website URL"
+              formControlName="url"
+              (blur)="checkforURL()"
+            />
+          </p-inputGroup>
+          @if(entryFormControl['url'].touched &&
+          entryFormControl['url'].invalid){
+          <div class="form_error">
+            @if(entryFormControl['url'].errors!['required']){ Pleaes provide url
+            } @if(entryFormControl['url'].errors!['pattern']){ Please provide a
+            valid URL }
+          </div>
+          }
+          <div></div>
+        </div>
+
+        <div class="input_section">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-user"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Username"
+              formControlName="username"
+            />
+          </p-inputGroup>
+          @if(entryFormControl['username'].touched &&
+          entryFormControl['username'].invalid){
+          <div class="form_error">
+            @if(entryFormControl['username'].errors!['required']){ Pleaes
+            provide username }
+          </div>
+          }
+        </div>
+
+        <div class="input_section">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-key"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              type="password"
+              placeholder="Password"
+              formControlName="password"
+            />
+          </p-inputGroup>
+          @if(entryFormControl['password'].touched &&
+          entryFormControl['password'].invalid){
+          <div class="form_error">
+            @if(entryFormControl['password'].errors!['required']){ Pleaes
+            provide password }
+            @if(entryFormControl['password'].errors!['pattern']){ Password must
+            be at least 8 characters long and include at least one uppercase
+            letter, one number, and one special character. }
+          </div>
+          }
+        </div>
+
+        <div class="input_section">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-clipboard"></i>
+            </p-inputGroupAddon>
+            <input pInputText placeholder="Notes" formControlName="notes" />
+          </p-inputGroup>
+        </div>
+      </form>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="footer_button_container">
+        <p-button
+          label="Cancel"
+          [raised]="true"
+          [text]="true"
+          (onClick)="onCancelEntrydialog()"
+        />
+        <p-button
+          label="Save"
+          severity="primary"
+          [raised]="true"
+          (onClick)="onSaveEntry()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
+  }
+</div>

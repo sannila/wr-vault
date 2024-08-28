@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import {
   ReactiveFormsModule,
@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from '../../services/http.service';
 import { Router } from '@angular/router';
 import { LoaderComponent } from "../../common/loader/loader.component";
+import { CommonModule, DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-sign-in',
@@ -30,7 +31,8 @@ import { LoaderComponent } from "../../common/loader/loader.component";
     InputIconModule,
     InputTextModule,
     HttpClientModule,
-    LoaderComponent
+    LoaderComponent,
+    CommonModule
 ],
   providers: [HttpService],
   templateUrl: './sign-in.component.html',
@@ -44,7 +46,8 @@ export class SignInComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +83,6 @@ export class SignInComponent implements OnInit {
           this.submitted = false;
         },
       });
-      return;
     }
   }
 }

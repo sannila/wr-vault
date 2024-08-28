@@ -1,0 +1,40 @@
+.container {
+  margin-top: 10px;
+}
+
+.button_container {
+  text-align: end;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer_button_container .p-element {
+  margin: 5px;
+}
+
+.vault_button_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form_container {
+  display: flex;
+}
+
+.input_section {
+  margin-bottom: 1rem;
+}
+
+.serverError {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: red;
+}
+
+.form_error {
+  color: red;
+  font-size: smaller;
+  margin-top: 2px;
+}
