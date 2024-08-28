@@ -386,18 +386,26 @@
 
   <!-- Get authentication -->
   <p-dialog
-    [closable]="false"
+    [closable]="true"
     [modal]="true"
     [(visible)]="authDialog"
     [style]="{ width: '25rem' }"
+    (onHide)="onClosePassDialog()"
   >
     <ng-template pTemplate="header">
       <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold white-space-nowrap"> Authenticate </span>
+        <span class="font-bold white-space-nowrap"> 
+          @if(!isShowPasswords){
+          Authenticate 
+          } @else {
+            Copy the Entry Password
+          }
+        </span>
       </div>
     </ng-template>
     <div class="flex align-items-center gap-3 mb-3">
       <div class="input_section">
+        @if(!isShowPasswords){
         <p-inputGroup>
           <p-inputGroupAddon>
             <i class="pi pi-book"></i>
@@ -406,13 +414,27 @@
             pInputText
             placeholder="Entry your password"
             [(ngModel)]="authPassword"
+            type="password"
           />
         </p-inputGroup>
+        } @else {
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-book"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              [(ngModel)]="entryPassword"
+              type="text"
+            />
+          </p-inputGroup>
+        }
       </div>
     </div>
 
     <ng-template pTemplate="footer">
       <div class="footer_button_container">
+        @if(!isShowPasswords){
         <p-button
           label="Cancel"
           [raised]="true"
@@ -420,11 +442,19 @@
           (onClick)="onCancelAuthdialog()"
         />
         <p-button
-          [label]="isUpdate ? 'Update' : 'Save'"
+          label="Authenticate"
           severity="primary"
           [raised]="true"
           (onClick)="onAuthenticate()"
+          [disabled]="authPassword == null || authPassword == ''"
+        />}@else {
+          <p-button
+          label="Copy"
+          [raised]="true"
+          [text]="true"
+          [cdkCopyToClipboard]="entryPassword!"
         />
+        }
       </div>
     </ng-template>
   </p-dialog>

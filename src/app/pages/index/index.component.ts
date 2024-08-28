@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { HeaderComponent } from '../../common/header/header.component';
 import { SideNavComponent } from '../../common/side-nav/side-nav.component';
 import { HttpService } from '../../services/http.service';
@@ -18,7 +24,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
-
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import {
   FormBuilder,
@@ -29,6 +35,8 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { response } from 'express';
+import { error } from 'console';
+import { User } from '../../models/model';
 
 @Component({
   selector: 'app-index',
@@ -50,13 +58,16 @@ import { response } from 'express';
     FormsModule,
     ConfirmDialogModule,
     ToastModule,
-    MessagesModule
+    MessagesModule,
+    ClipboardModule,
   ],
   providers: [HttpService, ConfirmationService, MessageService],
   templateUrl: './index.component.html',
   styleUrl: './index.component.css',
 })
 export class IndexComponent implements OnInit {
+  @ViewChild('userPassword') userPassword: ElementRef | undefined;
+
   isMenuOpen: boolean = false;
   activeIndex: number | null = null;
   vault_list: any[] = [];
@@ -69,6 +80,8 @@ export class IndexComponent implements OnInit {
   updateEntryId: number | null = null;
   authDialog: boolean = false;
   authPassword: string | null = null;
+  isShowPasswords: boolean = false;
+  entryPassword: string | null = null;
 
   newVaultForm!: FormGroup;
   newFolderForm!: FormGroup;
@@ -217,7 +230,7 @@ export class IndexComponent implements OnInit {
     this.actionValue = null;
   }
 
-  onCancelAuthdialog(){
+  onCancelAuthdialog() {
     this.authDialog = false;
     this.actionValue = null;
   }
@@ -230,8 +243,31 @@ export class IndexComponent implements OnInit {
     this.vaultDialog = false;
   }
 
-  onAuthenticate(){
-
+  onAuthenticate() {
+    let data: User = {
+      email: localStorage.getItem('email')!,
+      password: this.authPassword!,
+    };
+    this.httpService.post('users/login', data).subscribe(
+      (data) => {
+        if (data) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Authentication successful',
+          });
+          this.isShowPasswords = true;
+        }
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.errorMessage,
+        });
+      }
+    );
+    console.log('Auth data', data);
   }
 
   onSaveVault() {
@@ -344,6 +380,7 @@ export class IndexComponent implements OnInit {
           break;
         case 'password':
           this.authDialog = true;
+          this.entryPassword = entrie.password;
           break;
         case 'delete':
           this.confirmDialog(event, entrie.entry_id);
@@ -400,5 +437,14 @@ export class IndexComponent implements OnInit {
         });
       }
     });
+  }
+
+
+
+  onClosePassDialog() {
+    this.isShowPasswords = false;
+    this.actionValue = null;
+    this.authPassword = null;
+    this.entryPassword = null;
   }
 }

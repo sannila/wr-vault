@@ -16,8 +16,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from '../../services/http.service';
 import { Router } from '@angular/router';
-import { LoaderComponent } from "../../common/loader/loader.component";
+import { LoaderComponent } from '../../common/loader/loader.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { error } from 'console';
 
 @Component({
   selector: 'app-sign-in',
@@ -32,8 +33,8 @@ import { CommonModule, DOCUMENT } from '@angular/common';
     InputTextModule,
     HttpClientModule,
     LoaderComponent,
-    CommonModule
-],
+    CommonModule,
+  ],
   providers: [HttpService],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css',
@@ -68,22 +69,40 @@ export class SignInComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    this.loginError = "";
+    this.loginError = '';
     if (this.loginForm.valid) {
       console.log('onSubmit', this.loginForm.value);
-      this.httpService.post('users/login', this.loginForm.value).subscribe({
-        next: (res) => {
-          console.log('res', res);
-          localStorage.setItem('authToken', res.token);
-          this.router.navigate(['index']);
-        },
-        error: (error) => {
-          console.log('error', error);
-          this.loginError = error.error.errorMessage;
-          this.submitted = false;
-        },
-      });
+      this.httpService
+        .post('users/login', this.loginForm.value)
+        .subscribe(
+          (res) => {
+            if (res) {
+              console.log('res', res);
+              localStorage.setItem('authToken', res.token);
+              localStorage.setItem('email', this.loginForm.get('email')?.value);
+              this.router.navigate(['index']);
+            }
+          },
+          (error) => {
+            console.log('error', error);
+            this.loginError = error.error.errorMessage;
+            this.submitted = false;
+          }
+        )
+
+        // .subscribe({
+        //   next: (res) => {
+        //     console.log('res', res);
+        //     localStorage.setItem('authToken', res.token);
+        //     localStorage.setItem('email');
+        //     this.router.navigate(['index']);
+        //   },
+        //   error: (error) => {
+        //     console.log('error', error);
+        //     this.loginError = error.error.errorMessage;
+        //     this.submitted = false;
+        //   },
+        // });
     }
   }
 }
-
