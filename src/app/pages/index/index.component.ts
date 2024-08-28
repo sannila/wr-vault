@@ -15,9 +15,8 @@ import { DOCUMENT } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import {
-  SelectButtonModule,
-} from 'primeng/selectbutton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ToastModule } from 'primeng/toast';
 
 import {
   FormBuilder,
@@ -47,7 +46,8 @@ import { response } from 'express';
     TableModule,
     SelectButtonModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    ToastModule,
   ],
   providers: [HttpService, ConfirmationService, MessageService],
   templateUrl: './index.component.html',
@@ -97,7 +97,8 @@ export class IndexComponent implements OnInit {
     private router: Router,
     private httpService: HttpService,
     private formBuilder: FormBuilder,
-    private confirmationService: ConfirmationService 
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -185,59 +186,6 @@ export class IndexComponent implements OnInit {
     console.log('Checking for URL', this.newEntryForm.get('url')?.value);
   }
 
-  // getFolderlist(vaultID: any) {
-  //   console.log('getFolderlist', vaultID);
-  //   this.httpService.get(`folders/folder/${vaultID}`).subscribe((response) => {
-  //     console.log('getFolderlist', response);
-  //     this.folder_list = this.createTreeNodesData(response);
-  //     this.getEntries(this.folder_list);
-  //   });
-  // }
-
-  // getEntries(folderList: any[]) {
-  //   folderList.forEach((folder) => {
-  //     this.httpService
-  //       .get(`entries/entry/${folder.key}`)
-  //       .subscribe((entries) => {
-  //         if (entries && entries.length > 0) {
-  //           entries.forEach((entry: any) => {
-  //             folder.children.push({
-  //               key: folder.key + '-' + entry.entry_id,
-  //               label: entry.entry_name,
-  //               data: `${entry.entry_name} with url`,
-  //               icon: 'pi pi-address-book',
-  //             });
-  //           });
-  //         }
-  //       });
-  //   });
-
-  //   console.log('getEntries', this.folder_list);
-  // }
-
-  // createTreeNodesData(data: any[]) {
-  //   let treeNodes: {
-  //     key: any;
-  //     label: any;
-  //     data: any;
-  //     icon: string;
-  //     children: never[];
-  //   }[] = [];
-  //   data.forEach((item) => {
-  //     let node = {
-  //       key: item.folder_id,
-  //       label: item.folder_name,
-  //       data: item.folder_name,
-  //       icon: 'pi pi-folder-open',
-  //       children: [],
-  //     };
-  //     treeNodes.push(node);
-  //   });
-  //   console.log('createTreeNodesData', treeNodes);
-
-  //   return treeNodes;
-  // }
-
   showDialog(id: number, type: string) {
     console.log('vaultID', id);
     this.folderType = type;
@@ -264,21 +212,6 @@ export class IndexComponent implements OnInit {
     this.actionValue = null;
   }
 
-  onSaveFolder() {
-    if (this.folderType === 'subFolder') {
-      this.newFolderForm.get('parent_folder_id')?.patchValue(this.vaultID);
-      this.newFolderForm.get('vault_id')?.patchValue(null);
-    }
-    let data = this.newFolderForm.value;
-    if (this.newFolderForm.valid) {
-      this.httpService.post('folders/create', data).subscribe((data) => {
-        // this.getFolderlist(this.vaultID);
-        this.vaultID = null;
-        this.visibleDialog = false;
-      });
-    }
-  }
-
   showVaultDialog() {
     this.vaultDialog = true;
   }
@@ -293,7 +226,43 @@ export class IndexComponent implements OnInit {
       this.httpService.post('vaults/create', data).subscribe((data) => {
         this.getVaultList();
         this.vaultDialog = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Vault created successfully',
+        });
       });
+    }
+  }
+
+  onSaveFolder() {
+    if (this.folderType === 'subFolder') {
+      this.newFolderForm.get('parent_folder_id')?.patchValue(this.vaultID);
+      this.newFolderForm.get('vault_id')?.patchValue(null);
+    }
+    let data = this.newFolderForm.value;
+    if (this.newFolderForm.valid) {
+      this.httpService.post('folders/create', data).subscribe(
+        (data) => {
+          this.getParentFolderlist(this.vaultID!);
+          this.vaultID = null;
+          this.visibleDialog = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Folder created successfully',
+          });
+        },
+        (error) => {
+          if (error && error.error.statusCode == 409) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          }
+        }
+      );
     }
   }
 
@@ -333,6 +302,11 @@ export class IndexComponent implements OnInit {
           if (data.statusCode === 201) {
             this.get_parentfolder_entries(this.entryFolderId!);
             this.onCancelEntrydialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Entry created successfully',
+            });
           }
         },
         (error) => {
@@ -364,12 +338,12 @@ export class IndexComponent implements OnInit {
     }
     return;
   }
-  
-  confirmDialog(event: any, entry_id: number){
+
+  confirmDialog(event: any, entry_id: number) {
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
       message: 'Are you sure you want to delete this entry?',
-      header: "Confirmation",
+      header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteEntry(entry_id);
@@ -377,8 +351,8 @@ export class IndexComponent implements OnInit {
       reject: () => {
         this.actionValue = null;
         return;
-      }
-    })
+      },
+    });
   }
 
   onUpdateEntry() {
@@ -389,6 +363,11 @@ export class IndexComponent implements OnInit {
           if (data.statusCode === 200) {
             this.get_parentfolder_entries(this.entryFolderId!);
             this.onCancelEntrydialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Entry updated successfully',
+            });
           }
         });
     }
@@ -399,6 +378,11 @@ export class IndexComponent implements OnInit {
       if (data.statusCode === 200) {
         this.get_parentfolder_entries(this.entryFolderId!);
         this.actionValue = null;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Entry deleted successfully',
+        });
       }
     });
   }

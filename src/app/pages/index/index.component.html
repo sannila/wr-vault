@@ -146,52 +146,8 @@
   </p-accordion>
 
   <p-confirmDialog />
+  <p-toast />
 
-  <!-- create folder dialog -->
-  @if(newFolderForm){
-  <p-dialog
-    [closable]="false"
-    [modal]="true"
-    [(visible)]="visibleDialog"
-    [style]="{ width: '25rem' }"
-  >
-    <ng-template pTemplate="header">
-      <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold white-space-nowrap"> New Folder </span>
-      </div>
-    </ng-template>
-    <div class="flex align-items-center gap-3 mb-3">
-      <form [formGroup]="newFolderForm" (ngSubmit)="onSaveFolder()">
-        <p-inputGroup>
-          <p-inputGroupAddon>
-            <i class="pi pi-folder-open"></i>
-          </p-inputGroupAddon>
-          <input
-            pInputText
-            placeholder="Folder Name"
-            formControlName="folder_name"
-          />
-        </p-inputGroup>
-      </form>
-    </div>
-    <ng-template pTemplate="footer">
-      <div class="footer_button_container">
-        <p-button
-          label="Cancel"
-          [raised]="true"
-          [text]="true"
-          (onClick)="onCanceldialog()"
-        />
-        <p-button
-          label="Save"
-          severity="primary"
-          [raised]="true"
-          (onClick)="onSaveFolder()"
-        />
-      </div>
-    </ng-template>
-  </p-dialog>
-  }
   <!-- create vault dialog -->
   @if(newVaultForm){
   <p-dialog
@@ -232,6 +188,51 @@
           severity="primary"
           [raised]="true"
           (onClick)="onSaveVault()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
+  }
+  <!-- create folder dialog -->
+  @if(newFolderForm){
+  <p-dialog
+    [closable]="false"
+    [modal]="true"
+    [(visible)]="visibleDialog"
+    [style]="{ width: '25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <span class="font-bold white-space-nowrap"> New Folder </span>
+      </div>
+    </ng-template>
+    <div class="flex align-items-center gap-3 mb-3">
+      <form [formGroup]="newFolderForm" (ngSubmit)="onSaveFolder()">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-folder-open"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            placeholder="Folder Name"
+            formControlName="folder_name"
+          />
+        </p-inputGroup>
+      </form>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="footer_button_container">
+        <p-button
+          label="Cancel"
+          [raised]="true"
+          [text]="true"
+          (onClick)="onCanceldialog()"
+        />
+        <p-button
+          label="Save"
+          severity="primary"
+          [raised]="true"
+          (onClick)="onSaveFolder()"
         />
       </div>
     </ng-template>
@@ -365,10 +366,10 @@
           (onClick)="onCancelEntrydialog()"
         />
         <p-button
-          [label]= 'isUpdate ? "Update" : "Save"' 
+          [label]="isUpdate ? 'Update' : 'Save'"
           severity="primary"
           [raised]="true"
-          (onClick)="isUpdate ? onUpdateEntry() :  onSaveEntry()"
+          (onClick)="isUpdate ? onUpdateEntry() : onSaveEntry()"
         />
       </div>
     </ng-template>
