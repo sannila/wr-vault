@@ -17,6 +17,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToastModule } from 'primeng/toast';
+import { MessagesModule } from 'primeng/messages';
 
 import {
   FormBuilder,
@@ -48,6 +49,7 @@ import { response } from 'express';
     FormsModule,
     ConfirmDialogModule,
     ToastModule,
+    MessagesModule
   ],
   providers: [HttpService, ConfirmationService, MessageService],
   templateUrl: './index.component.html',
