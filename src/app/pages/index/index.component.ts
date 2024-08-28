@@ -13,6 +13,11 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DOCUMENT } from '@angular/common';
 import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+  SelectButtonModule,
+} from 'primeng/selectbutton';
 
 import {
   FormBuilder,
@@ -20,6 +25,7 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { response } from 'express';
 
@@ -39,8 +45,11 @@ import { response } from 'express';
     InputGroupAddonModule,
     ReactiveFormsModule,
     TableModule,
+    SelectButtonModule,
+    FormsModule,
+    ConfirmDialogModule
   ],
-  providers: [HttpService],
+  providers: [HttpService, ConfirmationService, MessageService],
   templateUrl: './index.component.html',
   styleUrl: './index.component.css',
 })
@@ -53,6 +62,8 @@ export class IndexComponent implements OnInit {
   vaultID: number | null = null;
   vaultDialog: boolean = false;
   entryDialog: boolean = false;
+  isUpdate: boolean = false;
+  updateEntryId: number | null = null;
 
   newVaultForm!: FormGroup;
   newFolderForm!: FormGroup;
@@ -69,15 +80,24 @@ export class IndexComponent implements OnInit {
   entryFolderId: number | null = null;
   entryErrorMessage: string = '';
 
-  urlPattern2 = /^(?:(http(s)?)?(sftp)?(ftp)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-  password = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+  urlPattern2 =
+    /^(?:(http(s)?)?(sftp)?(ftp)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+  password =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
 
+  actionValue: any;
+  actionOptions: any[] = [
+    { icon: 'pi pi-pencil', value: 'edit' },
+    { icon: 'pi pi-copy', value: 'password' },
+    { icon: 'pi pi-trash', value: 'delete' },
+  ];
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private httpService: HttpService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private confirmationService: ConfirmationService 
   ) {}
 
   ngOnInit(): void {
@@ -110,15 +130,21 @@ export class IndexComponent implements OnInit {
   newEntryformInialization() {
     this.newEntryForm = this.formBuilder.group({
       entry_name: new FormControl('', Validators.required),
-      url: new FormControl('', [Validators.required, Validators.pattern(this.urlPattern2)]),
+      url: new FormControl('', [
+        Validators.required,
+        Validators.pattern(this.urlPattern2),
+      ]),
       username: new FormControl('', Validators.required),
-      password: new FormControl('', [Validators.required, Validators.pattern(this.password)]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(this.password),
+      ]),
       notes: new FormControl(''),
       folder_id: new FormControl(null),
     });
   }
 
-  get entryFormControl(){
+  get entryFormControl() {
     return this.newEntryForm.controls;
   }
 
@@ -155,8 +181,8 @@ export class IndexComponent implements OnInit {
     this.isMenuOpen = event;
   }
 
-  checkforURL(){
-    console.log("Checking for URL", this.newEntryForm.get('url')?.value);
+  checkforURL() {
+    console.log('Checking for URL', this.newEntryForm.get('url')?.value);
   }
 
   // getFolderlist(vaultID: any) {
@@ -235,6 +261,7 @@ export class IndexComponent implements OnInit {
     this.newEntryForm.reset();
     this.entryFolderId = null;
     this.entryErrorMessage = '';
+    this.actionValue = null;
   }
 
   onSaveFolder() {
@@ -301,15 +328,78 @@ export class IndexComponent implements OnInit {
       this.newEntryForm.get('folder_id')?.patchValue(this.entryFolderId);
       let data = this.newEntryForm.value;
 
-      this.httpService.post('entries/create', data).subscribe((data) => {
-        if (data.statusCode === 201) {
-          this.get_parentfolder_entries(this.entryFolderId!);
-          this.onCancelEntrydialog();
+      this.httpService.post('entries/create', data).subscribe(
+        (data) => {
+          if (data.statusCode === 201) {
+            this.get_parentfolder_entries(this.entryFolderId!);
+            this.onCancelEntrydialog();
+          }
+        },
+        (error) => {
+          console.log('error', error);
+          this.entryErrorMessage = error.error.message;
         }
-      }, error => {
-        console.log('error', error);
-        this.entryErrorMessage = error.error.message;
-      });
+      );
     }
+  }
+
+  onActionClick(event: any, entrie: any): void {
+    if (this.actionValue) {
+      this.updateEntryId = null;
+      this.entryFolderId = entrie.folder_id;
+      switch (this.actionValue.value) {
+        case 'edit':
+          this.updateEntryId = entrie.entry_id;
+          this.newEntryForm.patchValue(entrie);
+          this.entryDialog = true;
+          this.isUpdate = true;
+          break;
+        case 'password':
+          break;
+        case 'delete':
+          this.confirmDialog(event, entrie.entry_id);
+          // this.deleteEntry(entrie.entry_id);
+          break;
+      }
+    }
+    return;
+  }
+  
+  confirmDialog(event: any, entry_id: number){
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: 'Are you sure you want to delete this entry?',
+      header: "Confirmation",
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteEntry(entry_id);
+      },
+      reject: () => {
+        this.actionValue = null;
+        return;
+      }
+    })
+  }
+
+  onUpdateEntry() {
+    if (this.newEntryForm.valid) {
+      this.httpService
+        .update(`entries/entry/${this.updateEntryId}`, this.newEntryForm.value)
+        .subscribe((data) => {
+          if (data.statusCode === 200) {
+            this.get_parentfolder_entries(this.entryFolderId!);
+            this.onCancelEntrydialog();
+          }
+        });
+    }
+  }
+
+  deleteEntry(entrieId: number) {
+    this.httpService.delete(`entries/${entrieId}`).subscribe((data) => {
+      if (data.statusCode === 200) {
+        this.get_parentfolder_entries(this.entryFolderId!);
+        this.actionValue = null;
+      }
+    });
   }
 }

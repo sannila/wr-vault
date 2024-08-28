@@ -103,7 +103,7 @@
                 <th>Entry Name</th>
                 <th>Website URL</th>
                 <th>Username</th>
-                <th>Password</th>
+                <!-- <th>Password</th> -->
                 <th>Notes</th>
                 <th>Action</th>
               </tr>
@@ -113,8 +113,20 @@
                 <td>{{ entrie.entry_name }}</td>
                 <td>{{ entrie.url }}</td>
                 <td>{{ entrie.username }}</td>
-                <td>{{ entrie.password }}</td>
+                <!-- <td>{{ entrie.password }}</td> -->
                 <td>{{ entrie.notes }}</td>
+                <td>
+                  <p-selectButton
+                    [options]="actionOptions"
+                    [(ngModel)]="actionValue"
+                    optionLabel="icon"
+                    (onOptionClick)="onActionClick($event, entrie)"
+                  >
+                    <ng-template let-item pTemplate>
+                      <i [class]="item.icon"></i>
+                    </ng-template>
+                  </p-selectButton>
+                </td>
               </tr>
             </ng-template>
           </p-table>
@@ -133,8 +145,12 @@
     }
   </p-accordion>
 
+  <p-confirmDialog />
+
+  <!-- create folder dialog -->
   @if(newFolderForm){
   <p-dialog
+    [closable]="false"
     [modal]="true"
     [(visible)]="visibleDialog"
     [style]="{ width: '25rem' }"
@@ -175,8 +191,11 @@
       </div>
     </ng-template>
   </p-dialog>
-  } @if(newVaultForm){
+  }
+  <!-- create vault dialog -->
+  @if(newVaultForm){
   <p-dialog
+    [closable]="false"
     [modal]="true"
     [(visible)]="vaultDialog"
     [style]="{ width: '25rem' }"
@@ -217,8 +236,11 @@
       </div>
     </ng-template>
   </p-dialog>
-  } @if(newEntryForm){
+  }
+  <!-- create entry dialog -->
+  @if(newEntryForm){
   <p-dialog
+    [closable]="false"
     [modal]="true"
     [(visible)]="entryDialog"
     [style]="{ width: '25rem' }"
@@ -343,10 +365,10 @@
           (onClick)="onCancelEntrydialog()"
         />
         <p-button
-          label="Save"
+          [label]= 'isUpdate ? "Update" : "Save"' 
           severity="primary"
           [raised]="true"
-          (onClick)="onSaveEntry()"
+          (onClick)="isUpdate ? onUpdateEntry() :  onSaveEntry()"
         />
       </div>
     </ng-template>
