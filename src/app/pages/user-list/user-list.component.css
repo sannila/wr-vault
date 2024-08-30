@@ -1,0 +1,17 @@
+.container-fluid {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+  
+.action_btn{
+    margin-right: 2px;
+}
+
+
+.form_error {
+    color: red;
+    font-size: smaller;
+    margin-top: 2px;
+  }
+  

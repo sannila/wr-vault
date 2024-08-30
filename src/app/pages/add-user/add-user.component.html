@@ -1,0 +1,99 @@
+<div class="container-fluid">
+  <p-card class="form_card_container">
+    <!-- <ng-template pTemplate="header">
+      <p class="p-card-header">Add New User</p>
+    </ng-template> -->
+    <div class="form_header">
+      <p class="p-card-header">
+        @if (isEditAction) { Update User } @else { New User }
+      </p>
+    </div>
+
+    <div class="p-card-content">
+      @if(formError){
+      <div class="serverError">
+        <span>{{ formError }}</span>
+      </div>
+      }
+    </div>
+
+    <form [formGroup]="userRegistrationForm">
+      <div class="input_section">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-user"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            class="input_field"
+            placeholder="User Name"
+            formControlName="username"
+          />
+        </p-inputGroup>
+        <div class="form_error">
+          @if(UserFormControl['username'].touched &&
+          UserFormControl['username'].invalid){ Please enter a username }
+        </div>
+      </div>
+      <div class="input_section">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-at"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            class="input_field"
+            placeholder="Email"
+            formControlName="email"
+          />
+        </p-inputGroup>
+        <div class="form_error">
+          @if(UserFormControl['email'].touched &&
+          UserFormControl['email'].invalid){ Please enter valid email address }
+        </div>
+      </div>
+      @if(!isEditAction){
+      <div class="input_section">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-key"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            class="input_field"
+            placeholder="Password"
+            type="password"
+            formControlName="password"
+          />
+        </p-inputGroup>
+        <div class="form_error">
+          @if(UserFormControl['password'].touched &&
+          UserFormControl['password'].invalid){ Password must be at least
+          8 characters long and include at least one uppercase letter, one
+          number, and one special character. }
+        </div>
+      </div>
+      }
+      <div class="input_section">
+        <p style="font-weight: bold">User Type</p>
+        <p-dropdown
+          formControlName="role"
+          [options]="userTypeOption"
+          optionLabel="name"
+          placeholder="Select User Type"
+        />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-center button-container">
+        <p-button
+          [label]="isEditAction ? 'Update User' : 'Add User'"
+          icon="pi pi-check"
+          (onClick)="onSubmit()"
+          [disabled]="!userRegistrationForm.valid"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
+<p-toast />

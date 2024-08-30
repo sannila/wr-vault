@@ -66,7 +66,6 @@ import { User } from '../../models/model';
   styleUrl: './index.component.css',
 })
 export class IndexComponent implements OnInit {
-  @ViewChild('userPassword') userPassword: ElementRef | undefined;
 
   isMenuOpen: boolean = false;
   activeIndex: number | null = null;

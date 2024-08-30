@@ -1,21 +1,22 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Button, ButtonModule } from 'primeng/button';
+import { SideNavComponent } from '../side-nav/side-nav.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [Button],
+  imports: [Button, SideNavComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
 export class HeaderComponent {
+  isMenuOpen: boolean = false;
 
-  @Input() isMenuOpen: boolean = false;
-  @Output() menuClick = new EventEmitter();
+  openMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 
-
-  openMenu(){
-    this.isMenuOpen = !this.isMenuOpen
-    this.menuClick.emit(this.isMenuOpen);
+  onClose(event: boolean) {
+    this.isMenuOpen = event;
   }
 }

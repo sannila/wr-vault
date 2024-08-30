@@ -1,0 +1,128 @@
+<div class="container-fluid">
+  <div class="table-section-container">
+    @for (user of userList; track $index) {
+    <p-card [header]="user.username">
+      <div class="row">
+        <div class="col">{{ user.email }}</div>
+        <div class="col">{{ user.role }}</div>
+        <div class="col">
+          <p-button
+            icon="pi pi-pencil"
+            class="action_btn"
+            [rounded]="true"
+            [raised]="true"
+            (onClick)="onEdit(user.user_id!)"
+          ></p-button>
+          <p-button
+            icon="pi pi-key"
+            class="action_btn"
+            [rounded]="true"
+            [raised]="true"
+            (onClick)="onPasswordChange(user.user_id!)"
+          ></p-button>
+          <p-button
+            icon="pi pi-trash"
+            class="action_btn"
+            [rounded]="true"
+            [raised]="true"
+            (onClick)="onUserDelete(user.user_id!)"
+          ></p-button>
+        </div>
+      </div>
+    </p-card>
+    }
+
+    <!-- <p-table [value]="userList">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>User Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <p-selectButton
+              [options]="actionOptions"
+              [(ngModel)]="actionValue"
+              optionLabel="icon"
+              (onOptionClick)="onActionClick($event, user.user_id)"
+            >
+              <ng-template let-item pTemplate>
+                <i [class]="item.icon"></i>
+              </ng-template>
+            </p-selectButton>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table> -->
+  </div>
+</div>
+
+@if(userID){
+<p-dialog
+  [closable]="true"
+  [modal]="true"
+  [(visible)]="editActionDialog"
+  (onHide)="onCloseDialog()"
+>
+  <app-add-user
+    [isEditAction]="editActionDialog"
+    [userID]="userID"
+  ></app-add-user>
+</p-dialog>
+}
+<!-- update password dialog -->
+@if(passwordForm){
+<p-dialog [closable]="false" [modal]="true" [(visible)]="isPasswordDialog">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold white-space-nowrap"> Update Password </span>
+    </div>
+  </ng-template>
+  <div class="flex align-items-center gap-3 mb-3">
+    <form [formGroup]="passwordForm">
+      <div class="input_section">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-key"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            class="input_field"
+            placeholder="Password"
+            type="password"
+            formControlName="password"
+          />
+        </p-inputGroup>
+        <div class="form_error">
+          @if(passwordFormControl['password'].touched &&
+          passwordFormControl['password'].invalid){
+          <small>Password must be at least 8 characters long, <br>
+          Include at least one uppercase letter, <br>
+          One number, and one special character. <br></small>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center button-container">
+      <p-button
+        label="Update Password"
+        icon="pi pi-check"
+        (onClick)="onUpdatePassword()"
+        [disabled]="!passwordForm.valid"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+}
+
+<p-toast />
+<p-confirmDialog />

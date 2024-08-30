@@ -3,3 +3,8 @@
   <div class="header-title">WR-Vault</div>
 
 </div>
+
+<app-side-nav
+  [sidebarVisible]="isMenuOpen"
+  (onCloseMenu)="onClose($event)"
+></app-side-nav>
