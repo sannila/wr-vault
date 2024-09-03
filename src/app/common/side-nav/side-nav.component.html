@@ -4,8 +4,11 @@
   [showCloseIcon]="false"
 >
   <ng-template pTemplate="header">
-    <span class="font-semibold text-xl">WR-Vault</span>
-    <span>{{ username }}</span>
+    <!-- Header for Side Navigation -->
+    <div class="side-nav-header">
+      <img src="../../../assets/vault.png" alt="Logo" class="logo"> <!-- Logo or icon -->
+      <h1 class="app-name">{{ username }}</h1> <!-- App or company name -->
+  </div>
   </ng-template>
 
   <nav class="size-navigation">

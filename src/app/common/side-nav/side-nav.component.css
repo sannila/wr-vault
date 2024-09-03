@@ -28,10 +28,49 @@
 .size-navigation a:hover {
     background-color: #007bff; /* Background color on hover */
     color: #fff; /* Text color on hover */
+    cursor: pointer;
 }
 
 /* Active state (if you want to highlight the current selection) */
 .size-navigation a.active {
     background-color: #007bff; /* Background color for active item */
     color: #fff; /* Text color for active item */
+}
+
+.side-nav {
+    width: 250px;
+    height: 100vh; /* Full viewport height */
+    background-color: #333; /* Dark background for the side nav */
+    color: #fff;
+    position: fixed; /* Fix the side nav to the left side */
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-nav-header {
+    width: 100%;
+    padding: 20px;
+    background-color: #444; /* Slightly lighter background for header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #555; /* Divider between header and links */
+}
+
+.side-nav-header .logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Circular logo */
+    margin-bottom: 10px;
+}
+
+.side-nav-header .app-name {
+    font-size: 20px;
+    margin: 0;
+    font-weight: bold;
+    color: #fff;
+    text-transform: capitalize;
 }
