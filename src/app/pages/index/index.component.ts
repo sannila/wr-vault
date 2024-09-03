@@ -223,6 +223,7 @@ export class IndexComponent implements OnInit {
 
   onCancelEntrydialog() {
     this.entryDialog = false;
+    this.isUpdate = false;
     this.newEntryForm.reset();
     this.entryFolderId = null;
     this.entryErrorMessage = '';
@@ -414,6 +415,7 @@ export class IndexComponent implements OnInit {
           if (data.statusCode === 200) {
             this.get_parentfolder_entries(this.entryFolderId!);
             this.onCancelEntrydialog();
+            this.isUpdate = false;
             this.messageService.add({
               severity: 'success',
               summary: 'Success',

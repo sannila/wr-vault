@@ -9,7 +9,7 @@ import { DOCUMENT } from '@angular/common';
   providedIn: 'root',
 })
 export class HttpService {
-  private baseURL = 'http://localhost:5000/api/';
+  private baseURL = 'http://192.168.168.105:5000/api/';
   localStorage: any;
   constructor(
     private http: HttpClient,

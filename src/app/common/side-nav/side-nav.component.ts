@@ -28,7 +28,7 @@ export class SideNavComponent implements OnInit {
     {
       title: 'Home',
       link: 'index',
-    },
+    }
   ];
 
   constructor(
@@ -45,6 +45,10 @@ export class SideNavComponent implements OnInit {
             title: 'User',
             link: 'user',
           },
+          {
+            title: 'Audit Logs',
+            link: 'audit-log'
+          }
         )
       }
       if (!authToken) {

@@ -7,7 +7,16 @@
     <span class="font-semibold text-xl">WR-Vault</span>
     <span>{{ username }}</span>
   </ng-template>
-  @for (nav of navigationList; track $index) {
+
+  <nav class="size-navigation">
+    <ul>
+      @for (nav of navigationList; track $index) {
+        <li><a (click)="onNavigation(nav.link)" class="size-option">{{ nav.title }}</a></li>
+      }
+      
+    </ul>
+  </nav>
+  <!-- @for (nav of navigationList; track $index) {
 
   <div class="nav_container">
     <p-button [outlined]="true" (onClick)="onNavigation(nav.link)">
@@ -15,7 +24,15 @@
     </p-button>
   </div>
 
-  }
+  <nav class="size-navigation">
+    <ul>
+        <li><a href="#" class="size-option">Small</a></li>
+        <li><a href="#" class="size-option">Medium</a></li>
+        <li><a href="#" class="size-option">Large</a></li>
+    </ul>
+</nav>
+
+  } -->
   <ng-template pTemplate="footer">
     <p-button
       icon="pi pi-sign-out"
