@@ -14,12 +14,38 @@
   <!-- accordion for vault -->
   <p-accordion [activeIndex]="activeIndex">
     @for (item of vault_list; track $index) {
-    <p-accordionTab
-      [header]="item.vault_name"
-      (selectedChange)="getParentFolderlist(item.vault_id)"
-    >
-      <div class="button_container">
-        <!-- <p-button label="Add Folder" [link]="true"></p-button> -->
+    <p-accordionTab (selectedChange)="getParentFolderlist(item.vault_id)">
+      <ng-template pTemplate="header">
+        <div class="container">
+          <div class="row justify-content-between">
+            <div class="col-10">
+              {{ item.vault_name }}
+            </div>
+            <div class="col-2">
+              <p-button
+                icon="pi pi-folder-open"
+                [rounded]="true"
+                [text]="false"
+                [raised]="true"
+                severity="success"
+                size="small"
+                (onClick)="showDialog(item.vault_id, 'folder')"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- <span class="flex align-items-center gap-2 w-full">
+          <span class="font-bold white-space-nowrap">
+            {{ item.vault_name }}
+          </span>
+          <p-button
+            icon="pi pi-folder-open"
+            [rounded]="true" [text]="false" [raised]="true" severity="success"
+            (onClick)="showDialog(item.vault_id, 'folder')"
+          />
+        </span> -->
+      </ng-template>
+      <!-- <div class="button_container">
         <p-button
           label="Add Folder"
           icon="pi pi-folder-open"
@@ -27,7 +53,7 @@
           [raised]="true"
           (onClick)="showDialog(item.vault_id, 'folder')"
         />
-      </div>
+      </div> -->
       <!-- <p-tree class="w-full md:w-30rem" [value]="folder_list" (onNodeSelect)="onnodeSelect($event)"></p-tree> -->
 
       <!-- accordion for parent folder -->
@@ -42,15 +68,41 @@
           (selectedChange)="get_parentfolder_entries(item.folder_id)"
         >
           <ng-template pTemplate="header">
-            <span class="flex align-items-center gap-2 w-full">
-              <i class="pi pi-folder-open"></i>
-              <span class="font-bold white-space-nowrap">
-                {{ item.folder_name }}
-              </span>
-            </span>
+            <div class="container">
+              <div class="row justify-content-between">
+                <div class="col-6">
+                  <span class="flex align-items-center gap-2 w-full">
+                    <i class="pi pi-folder-open"></i>
+                    <span class="font-bold white-space-nowrap">
+                      {{ item.folder_name }}
+                    </span>
+                  </span>
+                </div>
+                <div class="col-4">
+                  <span class="btn_holder">
+                    <p-button
+                      label="Add Folder"
+                      icon="pi pi-folder-open"
+                      iconPos="left"
+                      [raised]="true"
+                      (onClick)="showDialog(item.folder_id, 'subFolder')"
+                    />
+                  </span>
+
+                  <span class="btn_holder">
+                    <p-button
+                      label="Add Entry"
+                      icon="pi pi-plus"
+                      [text]="true"
+                      [raised]="true"
+                      (onClick)="showEntryDialog(item.folder_id)"
+                    />
+                  </span>
+                </div>
+              </div>
+            </div>
           </ng-template>
-          <div class="button_container">
-            <!-- <p-button label="Add Folder" [link]="true"></p-button> -->
+          <!-- <div class="button_container">
 
             <p-button
               label="Add Sub-Folder"
@@ -66,7 +118,7 @@
               [raised]="true"
               (onClick)="showEntryDialog(item.folder_id)"
             />
-          </div>
+          </div> -->
 
           <!-- accordian for sub folder -->
           @if(subfolderList1.length > 0){
@@ -388,11 +440,8 @@
   >
     <ng-template pTemplate="header">
       <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold white-space-nowrap"> 
-          @if(!isShowPasswords){
-          Authenticate 
-          } @else {
-            Copy the Entry Password
+        <span class="font-bold white-space-nowrap">
+          @if(!isShowPasswords){ Authenticate } @else { Copy the Entry Password
           }
         </span>
       </div>
@@ -412,16 +461,12 @@
           />
         </p-inputGroup>
         } @else {
-          <p-inputGroup>
-            <p-inputGroupAddon>
-              <i class="pi pi-book"></i>
-            </p-inputGroupAddon>
-            <input
-              pInputText
-              [(ngModel)]="entryPassword"
-              type="text"
-            />
-          </p-inputGroup>
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <i class="pi pi-book"></i>
+          </p-inputGroupAddon>
+          <input pInputText [(ngModel)]="entryPassword" type="text" />
+        </p-inputGroup>
         }
       </div>
     </div>
@@ -442,7 +487,7 @@
           (onClick)="onAuthenticate()"
           [disabled]="authPassword == null || authPassword == ''"
         />}@else {
-          <p-button
+        <p-button
           label="Copy"
           [raised]="true"
           [text]="true"
