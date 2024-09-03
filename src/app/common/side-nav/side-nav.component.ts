@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { SidebarModule } from 'primeng/sidebar';
 import { Button, ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
@@ -15,26 +22,38 @@ import { CardModule } from 'primeng/card';
 export class SideNavComponent implements OnInit {
   @Input() sidebarVisible: boolean = false;
   @Output() onCloseMenu = new EventEmitter<boolean>();
-  username = localStorage.getItem('username');
+  username:string | null = null;
 
   navigationList = [
     {
       title: 'Home',
       link: 'index',
     },
-    {
-      title: 'User',
-      link: 'user',
-    }
-  ]
+  ];
 
-  constructor(private router: Router, @Inject(DOCUMENT) private document: Document) {
-    // const localStorage = this.document.defaultView?.localStorage;
-    // if(localStorage){
-    // const authToken = localStorage.getItem('authToken');}
-    // if (!authToken) {
-    //   this.router.navigate(['sign-in']);
-    // }
+  constructor(
+    private router: Router,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    const localStorage = this.document.defaultView?.localStorage;
+    if (localStorage) {
+      const authToken = localStorage.getItem('authToken');
+      this.username = localStorage.getItem('username');
+      if(localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'superadmin') {
+        this.navigationList.push(
+          {
+            title: 'User',
+            link: 'user',
+          },
+        )
+      }
+      if (!authToken) {
+        this.router.navigate(['sign-in']);
+        return;
+      }
+      return;
+    }
+    this.router.navigate(['sign-in']);
   }
 
   ngOnInit(): void {}
@@ -48,7 +67,7 @@ export class SideNavComponent implements OnInit {
     this.router.navigate(['sign-in']);
   }
 
-  onNavigation(link: string){
+  onNavigation(link: string) {
     this.router.navigate([link]);
   }
 }
