@@ -331,13 +331,13 @@ export class IndexComponent implements OnInit {
         this.subfolderList1 = response;
       });
 
-    this.httpService.get(`entries/entry/${folder_id}`).subscribe((response) => {
+    this.httpService.get(`entries/entries/${folder_id}`).subscribe((response) => {
       this.entrieList = response;
     });
   }
 
   get_subfolder_entries(folder_id: number) {
-    this.httpService.get(`entries/entry/${folder_id}`).subscribe((response) => {
+    this.httpService.get(`entries/entries/${folder_id}`).subscribe((response) => {
       this.subfolderEntrieList = response;
     });
   }

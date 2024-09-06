@@ -28,6 +28,10 @@ export class SideNavComponent implements OnInit {
     {
       title: 'Home',
       link: 'index',
+    },
+    {
+      title: 'Passwords',
+      link: 'password',
     }
   ];
 

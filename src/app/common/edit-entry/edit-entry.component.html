@@ -1,0 +1,145 @@
+@if (newEntryForm) {
+<div class="flex align-items-center gap-3 mb-3">
+  @if(entryErrorMessage != ''){
+  <div class="serverError">
+    {{ entryErrorMessage }}
+  </div>
+  }
+
+  <form [formGroup]="newEntryForm">
+    @if(current_folder_value){
+    <div class="row justify-content-start">
+      <div class="col-1">
+        <i class="pi pi-folder-open"></i>
+      </div>
+      <div class="col-4">
+        {{ current_folder_value[0].label }}
+      </div>
+      <div class="col-4">
+        <a class="change_folder" (click)="onChangeFolder()">Change</a>
+      </div>
+    </div>
+    } @if(isChangeFolders){
+    <div class="input_section">
+      <p-dropdown
+        [options]="folderDDMValues"
+        formControlName="folder_id"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select a folder"
+      />
+    </div>
+    }
+    <div class="input_section">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-book"></i>
+        </p-inputGroupAddon>
+        <input
+          pInputText
+          placeholder="Entry Name"
+          formControlName="entry_name"
+        />
+      </p-inputGroup>
+      @if(entryFormControl['entry_name'].touched &&
+      entryFormControl['entry_name'].invalid){
+      <div class="form_error">
+        @if(entryFormControl['entry_name'].errors!['required']){ Pleaes provide
+        entry name }
+      </div>
+      }
+    </div>
+
+    <div class="input_section">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-link"></i>
+        </p-inputGroupAddon>
+        <input
+          pInputText
+          placeholder="Website URL"
+          formControlName="url"
+          (blur)="checkforURL()"
+        />
+      </p-inputGroup>
+      @if(entryFormControl['url'].touched && entryFormControl['url'].invalid){
+      <div class="form_error">
+        @if(entryFormControl['url'].errors!['required']){ Pleaes provide url }
+        @if(entryFormControl['url'].errors!['pattern']){ Please provide a valid
+        URL }
+      </div>
+      }
+      <div></div>
+    </div>
+
+    <div class="input_section">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-user"></i>
+        </p-inputGroupAddon>
+        <input pInputText placeholder="Username" formControlName="username" />
+        @if(showCopyAction){
+        <p-inputGroupAddon>
+          <i class="pi pi-copy"></i>
+        </p-inputGroupAddon>
+        }
+      </p-inputGroup>
+      @if(entryFormControl['username'].touched &&
+      entryFormControl['username'].invalid){
+      <div class="form_error">
+        @if(entryFormControl['username'].errors!['required']){ Pleaes provide
+        username }
+      </div>
+      }
+    </div>
+
+    <div class="input_section">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-key"></i>
+        </p-inputGroupAddon>
+        <input
+          pInputText
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
+        @if(showCopyAction){
+        <p-inputGroupAddon>
+          <i class="pi pi-copy"></i>
+        </p-inputGroupAddon>
+        }
+      </p-inputGroup>
+      @if(entryFormControl['password'].touched &&
+      entryFormControl['password'].invalid){
+      <div class="form_error">
+        @if(entryFormControl['password'].errors!['required']){ Pleaes provide
+        password } @if(entryFormControl['password'].errors!['pattern']){
+        Password must be at least 8 characters long and include at least one
+        uppercase letter, one number, and one special character. }
+      </div>
+      }
+    </div>
+
+    <div class="input_section">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <i class="pi pi-clipboard"></i>
+        </p-inputGroupAddon>
+        <input pInputText placeholder="Notes" formControlName="notes" />
+      </p-inputGroup>
+    </div>
+  </form>
+
+  <div class="footer_button_container">
+    <p-button
+      [label]="editEntryId ? 'Update' : 'Save'"
+      severity="primary"
+      [raised]="true"
+      (onClick)="editEntryId ? onUpdateEntry() : onSaveEntry()"
+    />
+  </div>
+</div>
+}
+
+<p-toast [position]="'top-left'" />

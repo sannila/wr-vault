@@ -1,0 +1,19 @@
+.input_section {
+  margin-bottom: 1rem;
+}
+
+.serverError {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: red;
+}
+
+.form_error {
+  color: red;
+  font-size: smaller;
+  margin-top: 2px;
+}
+
+.change_folder:hover {
+  cursor: pointer;
+}
