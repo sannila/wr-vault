@@ -66,10 +66,9 @@ import { User } from '../../models/model';
   styleUrl: './index.component.css',
 })
 export class IndexComponent implements OnInit {
-
   isMenuOpen: boolean = false;
   activeIndex: number | null = null;
-  vault_list: any[] = [];
+  // vault_list: any[] = [];
   // folder_list: any[] = [];
   visibleDialog: boolean = false;
   vaultID: number | null = null;
@@ -87,7 +86,7 @@ export class IndexComponent implements OnInit {
   newEntryForm!: FormGroup;
 
   // for accordion
-  folderIndex: number = 0;
+  folderIndex: number |null = null;
   parentFolderList: any[] = [];
   subfolderList1: any[] = [];
   folderType: string = '';
@@ -121,7 +120,8 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     const localStorage = this.document.defaultView?.localStorage;
     if (localStorage && localStorage.getItem('authToken') != null) {
-      this.getVaultList();
+      // this.getVaultList();
+      this.getFolders();
       this.newfolderFormInialization();
       this.newVaultformInialization();
       this.newEntryformInialization();
@@ -129,6 +129,19 @@ export class IndexComponent implements OnInit {
       this.router.navigate(['sign-in']);
       return;
     }
+  }
+
+  getFolders() {
+    this.httpService.get('folders/folders').subscribe(
+      (folders) => {
+        this.parentFolderList = folders;
+      },
+      (error) => {
+        if (error.error.statusCode == 404) {
+          this.router.navigate(['sign-in']);
+        }
+      }
+    );
   }
 
   newfolderFormInialization() {
@@ -166,18 +179,18 @@ export class IndexComponent implements OnInit {
     return this.newEntryForm.controls;
   }
 
-  getVaultList() {
-    this.httpService.get('vaults/list').subscribe(
-      (response) => {
-        this.vault_list = response;
-      },
-      (error) => {
-        if (error.error.statusCode == 404) {
-          this.router.navigate(['sign-in']);
-        }
-      }
-    );
-  }
+  // getVaultList() {
+  //   this.httpService.get('vaults/list').subscribe(
+  //     (response) => {
+  //       this.vault_list = response;
+  //     },
+  //     (error) => {
+  //       if (error.error.statusCode == 404) {
+  //         this.router.navigate(['sign-in']);
+  //       }
+  //     }
+  //   );
+  // }
 
   activeIndexChange(index: any) {
     this.activeIndex = index;
@@ -203,7 +216,7 @@ export class IndexComponent implements OnInit {
     console.log('Checking for URL', this.newEntryForm.get('url')?.value);
   }
 
-  showDialog(id: number, type: string) {
+  showDialog(id: number | null, type: string) {
     console.log('vaultID', id);
     this.folderType = type;
     this.vaultID = id;
@@ -274,7 +287,7 @@ export class IndexComponent implements OnInit {
     let data = this.newVaultForm.value;
     if (this.newVaultForm.valid) {
       this.httpService.post('vaults/create', data).subscribe((data) => {
-        this.getVaultList();
+        // this.getVaultList();
         this.vaultDialog = false;
         this.messageService.add({
           severity: 'success',
@@ -294,7 +307,8 @@ export class IndexComponent implements OnInit {
     if (this.newFolderForm.valid) {
       this.httpService.post('folders/create', data).subscribe(
         (data) => {
-          this.getParentFolderlist(this.vaultID!);
+          // this.getParentFolderlist(this.vaultID!);
+          this.getFolders();
           this.vaultID = null;
           this.visibleDialog = false;
           this.messageService.add({
@@ -318,11 +332,11 @@ export class IndexComponent implements OnInit {
 
   // for accordiance
 
-  getParentFolderlist(vaultID: number) {
-    this.httpService.get(`folders/folder/${vaultID}`).subscribe((response) => {
-      this.parentFolderList = response;
-    });
-  }
+  // getParentFolderlist(vaultID: number) {
+  //   this.httpService.get(`folders/folder/${vaultID}`).subscribe((response) => {
+  //     this.parentFolderList = response;
+  //   });
+  // }
 
   get_parentfolder_entries(folder_id: number) {
     this.httpService
@@ -331,15 +345,19 @@ export class IndexComponent implements OnInit {
         this.subfolderList1 = response;
       });
 
-    this.httpService.get(`entries/entries/${folder_id}`).subscribe((response) => {
-      this.entrieList = response;
-    });
+    this.httpService
+      .get(`entries/entries/${folder_id}`)
+      .subscribe((response) => {
+        this.entrieList = response;
+      });
   }
 
   get_subfolder_entries(folder_id: number) {
-    this.httpService.get(`entries/entries/${folder_id}`).subscribe((response) => {
-      this.subfolderEntrieList = response;
-    });
+    this.httpService
+      .get(`entries/entries/${folder_id}`)
+      .subscribe((response) => {
+        this.subfolderEntrieList = response;
+      });
   }
 
   onSaveEntry() {
@@ -439,8 +457,6 @@ export class IndexComponent implements OnInit {
       }
     });
   }
-
-
 
   onClosePassDialog() {
     this.isShowPasswords = false;
