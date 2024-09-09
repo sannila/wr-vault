@@ -480,7 +480,7 @@ export class IndexComponent implements OnInit {
             if (parentFolderId) {
               this.get_parent_folder_list(parentFolderId!);
             } else {
-              this.get_parent_folder_list(folder_id);
+              this.getFolders();
             }
             this.messageService.add({
               severity: 'success',

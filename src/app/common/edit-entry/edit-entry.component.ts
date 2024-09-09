@@ -57,7 +57,7 @@ export class EditEntryComponent implements OnInit {
   folderDDMValues: { label: any; value: any }[] = [];
   saveFolder = null;
   current_folder_value: any = null;
-  isChangeFolders = false;
+  isChangeFolders = true;
   urlPattern2 =
     /^(?:(http(s)?)?(sftp)?(ftp)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   password =
@@ -214,5 +214,16 @@ export class EditEntryComponent implements OnInit {
     this.isChangeFolders = true;
   }
 
-  onSaveEntry() {}
+  onSaveEntry() {
+    if(this.newEntryForm.valid){
+      this.httpService.post('entries/create', this.newEntryForm.value).subscribe(data => {
+        if(data.statusCode === 201){
+          // this.initialFunctions();
+          this.onEntryUpdated.emit(true);
+          this.isChangeFolders = false;
+          this.messageService.add({severity:'success', summary:'Success', detail:'Entry created successfully'});
+        }
+      })
+    }
+  }
 }

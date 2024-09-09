@@ -37,26 +37,29 @@
                 </div>
                 <div class="col-4">
                   <span class="btn_holder">
-                    <p-button
+                    <button (click)="showDialog(parentFolder.folder_id, 'subFolder')">Add Folder</button>
+                    <!-- <p-button
                       label="Add Folder"
                       icon="pi pi-folder-open"
                       iconPos="left"
                       [raised]="true"
                       (onClick)="showDialog(parentFolder.folder_id, 'subFolder')"
-                    />
+                    /> -->
                   </span>
 
                   <span class="btn_holder">
-                    <p-button
+                    <button (click)="showEntryDialog(parentFolder.folder_id)">Add Entry</button>
+                    <!-- <p-button
                       label="Add Entry"
                       icon="pi pi-plus"
                       [text]="true"
                       [raised]="true"
                       (onClick)="showEntryDialog(parentFolder.folder_id)"
-                    />
+                    /> -->
                   </span>
                   <span class="btn_holder">
-                    <p-button icon="pi pi-trash" (onClick)="onDeleteFolder(parentFolder.folder_id)"/>
+                    <button (click)="onDeleteFolder(parentFolder.folder_id)">Delete</button>
+                    <!-- <p-button icon="pi pi-trash" (onClick)="onDeleteFolder(parentFolder.folder_id)"/> -->
                   </span>
                 </div>
               </div>
