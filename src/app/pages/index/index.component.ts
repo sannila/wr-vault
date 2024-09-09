@@ -71,8 +71,8 @@ export class IndexComponent implements OnInit {
   // vault_list: any[] = [];
   // folder_list: any[] = [];
   visibleDialog: boolean = false;
-  vaultID: number | null = null;
-  vaultDialog: boolean = false;
+  // vaultID: number | null = null;
+  // vaultDialog: boolean = false;
   entryDialog: boolean = false;
   isUpdate: boolean = false;
   updateEntryId: number | null = null;
@@ -87,6 +87,7 @@ export class IndexComponent implements OnInit {
 
   // for accordion
   folderIndex: number |null = null;
+  parentFolderId: number | null = null;
   parentFolderList: any[] = [];
   subfolderList1: any[] = [];
   folderType: string = '';
@@ -123,7 +124,7 @@ export class IndexComponent implements OnInit {
       // this.getVaultList();
       this.getFolders();
       this.newfolderFormInialization();
-      this.newVaultformInialization();
+      // this.newVaultformInialization();
       this.newEntryformInialization();
     } else {
       this.router.navigate(['sign-in']);
@@ -131,8 +132,9 @@ export class IndexComponent implements OnInit {
     }
   }
 
+  // Get root folders (parent folders)
   getFolders() {
-    this.httpService.get('folders/folders').subscribe(
+    this.httpService.get('folders/root_folder').subscribe(
       (folders) => {
         this.parentFolderList = folders;
       },
@@ -152,11 +154,11 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  newVaultformInialization() {
-    this.newVaultForm = this.formBuilder.group({
-      vault_name: new FormControl('', Validators.required),
-    });
-  }
+  // newVaultformInialization() {
+  //   this.newVaultForm = this.formBuilder.group({
+  //     vault_name: new FormControl('', Validators.required),
+  //   });
+  // }
 
   newEntryformInialization() {
     this.newEntryForm = this.formBuilder.group({
@@ -178,19 +180,6 @@ export class IndexComponent implements OnInit {
   get entryFormControl() {
     return this.newEntryForm.controls;
   }
-
-  // getVaultList() {
-  //   this.httpService.get('vaults/list').subscribe(
-  //     (response) => {
-  //       this.vault_list = response;
-  //     },
-  //     (error) => {
-  //       if (error.error.statusCode == 404) {
-  //         this.router.navigate(['sign-in']);
-  //       }
-  //     }
-  //   );
-  // }
 
   activeIndexChange(index: any) {
     this.activeIndex = index;
@@ -217,16 +206,17 @@ export class IndexComponent implements OnInit {
   }
 
   showDialog(id: number | null, type: string) {
-    console.log('vaultID', id);
+    console.log('folder', id);
     this.folderType = type;
-    this.vaultID = id;
-    this.newFolderForm.get('vault_id')?.patchValue(id);
+    this.parentFolderId = id;
+    this.newFolderForm.get('parent_folder_id')?.patchValue(id);
     this.visibleDialog = true;
   }
 
   onCanceldialog() {
-    this.vaultID = null;
+    this.parentFolderId = null;
     this.visibleDialog = false;
+    this.newFolderForm.reset();
   }
 
   showEntryDialog(folderID: number) {
@@ -248,13 +238,13 @@ export class IndexComponent implements OnInit {
     this.actionValue = null;
   }
 
-  showVaultDialog() {
-    this.vaultDialog = true;
-  }
+  // showVaultDialog() {
+  //   this.vaultDialog = true;
+  // }
 
-  onCancelVaultdialog() {
-    this.vaultDialog = false;
-  }
+  // onCancelVaultdialog() {
+  //   this.vaultDialog = false;
+  // }
 
   onAuthenticate() {
     let data: User = {
@@ -283,33 +273,37 @@ export class IndexComponent implements OnInit {
     console.log('Auth data', data);
   }
 
-  onSaveVault() {
-    let data = this.newVaultForm.value;
-    if (this.newVaultForm.valid) {
-      this.httpService.post('vaults/create', data).subscribe((data) => {
-        // this.getVaultList();
-        this.vaultDialog = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Vault created successfully',
-        });
-      });
-    }
-  }
+  // onSaveVault() {
+  //   let data = this.newVaultForm.value;
+  //   if (this.newVaultForm.valid) {
+  //     this.httpService.post('vaults/create', data).subscribe((data) => {
+  //       // this.getVaultList();
+  //       this.vaultDialog = false;
+  //       this.messageService.add({
+  //         severity: 'success',
+  //         summary: 'Success',
+  //         detail: 'Vault created successfully',
+  //       });
+  //     });
+  //   }
+  // }
 
   onSaveFolder() {
-    if (this.folderType === 'subFolder') {
-      this.newFolderForm.get('parent_folder_id')?.patchValue(this.vaultID);
-      this.newFolderForm.get('vault_id')?.patchValue(null);
-    }
+    // if (this.folderType === 'subFolder') {
+    //   this.newFolderForm.get('parent_folder_id')?.patchValue(this.parentFolderId);
+    //   // this.newFolderForm.get('vault_id')?.patchValue(null);
+    // }
     let data = this.newFolderForm.value;
     if (this.newFolderForm.valid) {
       this.httpService.post('folders/create', data).subscribe(
         (data) => {
           // this.getParentFolderlist(this.vaultID!);
-          this.getFolders();
-          this.vaultID = null;
+          if(this.parentFolderId){
+            this.get_parent_folder_list(this.parentFolderId);
+          } else{
+          this.getFolders();}
+          // this.vaultID = null;
+          this.onCanceldialog();
           this.visibleDialog = false;
           this.messageService.add({
             severity: 'success',
@@ -338,13 +332,15 @@ export class IndexComponent implements OnInit {
   //   });
   // }
 
-  get_parentfolder_entries(folder_id: number) {
+  get_parent_folder_list(folder_id: number) {
     this.httpService
       .get(`folders/parent_folder/${folder_id}`)
       .subscribe((response) => {
         this.subfolderList1 = response;
       });
+  }
 
+  get_parent_folder_entries(folder_id: number) {
     this.httpService
       .get(`entries/entries/${folder_id}`)
       .subscribe((response) => {
@@ -352,7 +348,14 @@ export class IndexComponent implements OnInit {
       });
   }
 
+  get_parentfolder_entries(folder_id: number) {
+    this.get_parent_folder_list(folder_id);
+
+    this.get_parent_folder_entries(folder_id);
+  }
+
   get_subfolder_entries(folder_id: number) {
+    this.subfolderEntrieList = [];
     this.httpService
       .get(`entries/entries/${folder_id}`)
       .subscribe((response) => {
@@ -368,7 +371,7 @@ export class IndexComponent implements OnInit {
       this.httpService.post('entries/create', data).subscribe(
         (data) => {
           if (data.statusCode === 201) {
-            this.get_parentfolder_entries(this.entryFolderId!);
+            this.get_parent_folder_entries(this.entryFolderId!);
             this.onCancelEntrydialog();
             this.messageService.add({
               severity: 'success',

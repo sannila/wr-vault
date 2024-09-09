@@ -85,13 +85,68 @@
           >
             @for (item of subfolderList1; track $index) {
             <p-accordionTab
-              [header]="item.folder_name"
               (selectedChange)="get_subfolder_entries(item.folder_id)"
             >
-              @if(subfolderEntrieList.length > 0){ @for (item of entrieList;
-              track $index) {
-              <p>{{ item.entry_name }}</p>
-              } } @else {
+            <ng-template pTemplate="header">
+              <div class="container">
+                <div class="row justify-content-between">
+                  <div class="col-6">
+                    <span class="flex align-items-center gap-2 w-full">
+                      <i class="pi pi-folder-open"></i>
+                      <span class="font-bold white-space-nowrap">
+                        {{ item.folder_name }}
+                      </span>
+                    </span>
+                  </div>
+                  <div class="col-4">
+                    <span class="btn_holder">
+                      <p-button
+                        label="Add Entry"
+                        icon="pi pi-plus"
+                        [text]="true"
+                        [raised]="true"
+                        (onClick)="showEntryDialog(item.folder_id)"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+              @if(subfolderEntrieList.length > 0){
+              <p-table [value]="subfolderEntrieList">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Entry Name</th>
+                    <th>Website URL</th>
+                    <th>Username</th>
+                    <!-- <th>Password</th> -->
+                    <th>Notes</th>
+                    <th>Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-entrie>
+                  <tr>
+                    <td>{{ entrie.entry_name }}</td>
+                    <td>{{ entrie.url }}</td>
+                    <td>{{ entrie.username }}</td>
+                    <!-- <td>{{ entrie.password }}</td> -->
+                    <td>{{ entrie.notes }}</td>
+                    <td>
+                      <p-selectButton
+                        [options]="actionOptions"
+                        [(ngModel)]="actionValue"
+                        optionLabel="icon"
+                        (onOptionClick)="onActionClick($event, entrie)"
+                      >
+                        <ng-template let-item pTemplate>
+                          <i [class]="item.icon"></i>
+                        </ng-template>
+                      </p-selectButton>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              } @else {
               <!-- <h4>No Entries Found</h4> -->
               <p-messages severity="error">
                 <ng-template pTemplate>
@@ -157,7 +212,7 @@
   <p-toast />
 
   <!-- create vault dialog -->
-  @if(newVaultForm){
+  <!-- @if(newVaultForm){
   <p-dialog
     [closable]="false"
     [modal]="true"
@@ -200,7 +255,7 @@
       </div>
     </ng-template>
   </p-dialog>
-  }
+  } -->
   <!-- create folder dialog -->
   @if(newFolderForm){
   <p-dialog
