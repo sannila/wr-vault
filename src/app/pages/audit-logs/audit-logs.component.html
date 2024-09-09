@@ -1,46 +1,41 @@
 <app-header></app-header>
 
-@if(auditLogs.length > 0){
-    <p-table [value]="auditLogs" [tableStyle]="{'width': '100%'}">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Modified Date</th>
-                <th>Action</th>
-                <th>Type</th>
-                <th>ID</th>
-                <th>Action Details</th>
-                <th>User ID</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-audit>
-            <tr>
-                <td>{{getDateTimeFormated(audit.timestamp)}}</td>
-                <td>{{audit.action}}</td>
-                <td>
-                    @if(audit.vault_id == null){
-                        Entry
-                    }
-                    @if(audit.entry_id == null){
-                        Vault
-                    }
-                </td>
-                <td>
-                    @if(audit.vault_id == null){
-                        {{audit.entry_id}}
-                    }
-                    @if(audit.entry_id == null){
-                        {{audit.vault_id}}
-                    }
-                </td>
-                <td>
-                    {{audit.action_details}}
-                </td>
-                <td>
-                    {{audit.user_id}}
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-} @else {
-    No Logs found
-}
+<div class="parent-container">
+  @if(auditLogs.length > 0){
+  <p-table [value]="auditLogs" [tableStyle]="{ width: '100%' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Modified Date</th>
+        <th>Action</th>
+        <th>Type</th>
+        <th>ID</th>
+        <th>Action Details</th>
+        <th>User ID</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-audit>
+      <tr>
+        <td>{{ getDateTimeFormated(audit.timestamp) }}</td>
+        <td>{{ audit.action }}</td>
+        <td>
+          @if(audit.vault_id == null){ Entry } @if(audit.entry_id == null){
+          Vault }
+        </td>
+        <td>
+          @if(audit.vault_id == null){
+          {{ audit.entry_id }}
+          } @if(audit.entry_id == null){
+          {{ audit.vault_id }}
+          }
+        </td>
+        <td>
+          {{ audit.action_details }}
+        </td>
+        <td>
+          {{ audit.user_id }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  } @else { No Logs found }
+</div>
