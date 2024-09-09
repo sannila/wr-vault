@@ -19,10 +19,10 @@
         (activeIndexChange)="activeFolderIndexChange($event)"
         [activeIndex]="folderIndex"
       >
-        @if(parentFolderList.length > 0) { @for (item of parentFolderList; track
+        @if(parentFolderList.length > 0) { @for (parentFolder of parentFolderList; track
         $index) {
         <p-accordionTab
-          (selectedChange)="get_parentfolder_entries(item.folder_id)"
+          (selectedChange)="get_parentfolder_entries(parentFolder.folder_id)"
         >
           <ng-template pTemplate="header">
             <div class="container">
@@ -31,7 +31,7 @@
                   <span class="flex align-items-center gap-2 w-full">
                     <i class="pi pi-folder-open"></i>
                     <span class="font-bold white-space-nowrap">
-                      {{ item.folder_name }}
+                      {{ parentFolder.folder_name }}
                     </span>
                   </span>
                 </div>
@@ -42,7 +42,7 @@
                       icon="pi pi-folder-open"
                       iconPos="left"
                       [raised]="true"
-                      (onClick)="showDialog(item.folder_id, 'subFolder')"
+                      (onClick)="showDialog(parentFolder.folder_id, 'subFolder')"
                     />
                   </span>
 
@@ -52,8 +52,11 @@
                       icon="pi pi-plus"
                       [text]="true"
                       [raised]="true"
-                      (onClick)="showEntryDialog(item.folder_id)"
+                      (onClick)="showEntryDialog(parentFolder.folder_id)"
                     />
+                  </span>
+                  <span class="btn_holder">
+                    <p-button icon="pi pi-trash" (onClick)="onDeleteFolder(parentFolder.folder_id)"/>
                   </span>
                 </div>
               </div>
@@ -107,6 +110,9 @@
                         [raised]="true"
                         (onClick)="showEntryDialog(item.folder_id)"
                       />
+                    </span>
+                    <span class="btn_holder">
+                      <p-button icon="pi pi-trash" (onClick)="onDeleteFolder(item.folder_id, parentFolder.folder_id)"/>
                     </span>
                   </div>
                 </div>

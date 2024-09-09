@@ -86,7 +86,7 @@ export class IndexComponent implements OnInit {
   newEntryForm!: FormGroup;
 
   // for accordion
-  folderIndex: number |null = null;
+  folderIndex: number | null = null;
   parentFolderId: number | null = null;
   parentFolderList: any[] = [];
   subfolderList1: any[] = [];
@@ -298,10 +298,11 @@ export class IndexComponent implements OnInit {
       this.httpService.post('folders/create', data).subscribe(
         (data) => {
           // this.getParentFolderlist(this.vaultID!);
-          if(this.parentFolderId){
+          if (this.parentFolderId) {
             this.get_parent_folder_list(this.parentFolderId);
-          } else{
-          this.getFolders();}
+          } else {
+            this.getFolders();
+          }
           // this.vaultID = null;
           this.onCanceldialog();
           this.visibleDialog = false;
@@ -466,5 +467,39 @@ export class IndexComponent implements OnInit {
     this.actionValue = null;
     this.authPassword = null;
     this.entryPassword = null;
+  }
+
+  onDeleteFolder(folder_id: number, parentFolderId?: number) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this folder?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.httpService.delete('folders/' + folder_id).subscribe(
+          (data) => {
+            if (parentFolderId) {
+              this.get_parent_folder_list(parentFolderId!);
+            } else {
+              this.get_parent_folder_list(folder_id);
+            }
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Folder deleted successfully',
+            });
+          },
+          (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: "Folder contains subfolder/entries, can't be deleted.",
+            });
+          }
+        );
+      },
+      reject: () => {
+        return;
+      },
+    });
   }
 }

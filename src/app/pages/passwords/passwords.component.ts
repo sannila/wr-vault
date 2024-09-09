@@ -72,6 +72,12 @@ export class PasswordsComponent implements OnInit {
   onEntryUpdated(event: boolean) {
     if (event) {
       this.getEntryDetails();
+      this.sidebarVisible = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Entry updated successfully',
+      });
     }
   }
 
