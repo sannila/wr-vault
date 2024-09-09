@@ -1,0 +1,14 @@
+.layout {
+    display: flex;
+    height: 100vh;
+  
+    .side-nav {
+      width: 174px !important;
+      background-color: #f4f4f4;
+      padding: 10px;
+    }
+  
+    .main-content {
+      flex: 1;
+    }
+  }

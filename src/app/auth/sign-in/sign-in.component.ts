@@ -82,7 +82,7 @@ export class SignInComponent implements OnInit {
               localStorage.setItem('username', res.user.username);
               localStorage.setItem('role', res.user.role);
               localStorage.setItem('user_id', res.user.user_id);
-              this.router.navigate(['index']);
+              this.router.navigate(['home']);
             }
           },
           (error) => {

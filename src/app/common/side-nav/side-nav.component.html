@@ -1,44 +1,46 @@
-<p-sidebar
+<div class="side-nav-header">
+  <img src="../../../assets/vault.png" alt="Logo" class="logo" />
+  <h1 class="app-name">{{ username }}</h1>
+</div>
+
+<p-panelMenu [model]="navigationList"> </p-panelMenu>
+
+<div class="row align-items-end">
+  <p-button
+    icon="pi pi-sign-out"
+    [rounded]="true"
+    [raised]="true"
+    severity="secondary"
+    (onClick)="onLogout()"
+  />
+</div>
+
+<!-- <p-sidebar
   [(visible)]="sidebarVisible"
   (onHide)="onClose()"
   [showCloseIcon]="false"
 >
   <ng-template pTemplate="header">
-    <!-- Header for Side Navigation -->
     <div class="side-nav-header">
-      <img src="../../../assets/vault.png" alt="Logo" class="logo"> <!-- Logo or icon -->
-      <h1 class="app-name">{{ username }}</h1> <!-- App or company name -->
-  </div>
+      <img src="../../../assets/vault.png" alt="Logo" class="logo" />
+      <h1 class="app-name">{{ username }}</h1>
+    </div>
   </ng-template>
 
   <nav class="size-navigation">
     <ul>
       @for (nav of navigationList; track $index) {
-        <li><a (click)="onNavigation(nav.link)" class="size-option">{{ nav.title }}</a></li>
+      <li>
+        <a (click)="onNavigation(nav.link)" class="size-option">{{
+          nav.title
+        }}</a>
+      </li>
       }
-      
     </ul>
   </nav>
-  <!-- @for (nav of navigationList; track $index) {
 
-  <div class="nav_container">
-    <p-button [outlined]="true" (onClick)="onNavigation(nav.link)">
-      <div class="card">{{ nav.title }}</div>
-    </p-button>
-  </div>
-
-  <nav class="size-navigation">
-    <ul>
-        <li><a href="#" class="size-option">Small</a></li>
-        <li><a href="#" class="size-option">Medium</a></li>
-        <li><a href="#" class="size-option">Large</a></li>
-    </ul>
-</nav>
-
-  } -->
   <ng-template pTemplate="footer">
-    
-<hr />
+    <hr />
     <p-button
       icon="pi pi-sign-out"
       [rounded]="true"
@@ -47,4 +49,4 @@
       (onClick)="onLogout()"
     />
   </ng-template>
-</p-sidebar>
+</p-sidebar> -->

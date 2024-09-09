@@ -1,54 +1,4 @@
-/* Style for the size navigation menu */
-.size-navigation ul {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0;
-    margin: 0;
-    display: flex; /* Use flexbox layout */
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
-    gap: 10px; /* Space between items */
-}
 
-.size-navigation li {
-    width: 100%; /* Ensure each item takes full width */
-    text-align: center; /* Center the text within each item */
-}
-
-.size-navigation a {
-    text-decoration: none; /* Remove underlines from links */
-    color: #333; /* Text color */
-    background-color: #e0e0e0; /* Background color */
-    padding: 10px 20px; /* Padding around the text */
-    border-radius: 5px; /* Rounded corners */
-    display: block; /* Ensure the link takes full width */
-    width: 100%; /* Full width of the list item */
-    transition: background-color 0.3s ease; /* Smooth background color transition */
-}
-
-.size-navigation a:hover {
-    background-color: #007bff; /* Background color on hover */
-    color: #fff; /* Text color on hover */
-    cursor: pointer;
-}
-
-/* Active state (if you want to highlight the current selection) */
-.size-navigation a.active {
-    background-color: #007bff; /* Background color for active item */
-    color: #fff; /* Text color for active item */
-}
-
-.side-nav {
-    width: 250px;
-    height: 100vh; /* Full viewport height */
-    background-color: #333; /* Dark background for the side nav */
-    color: #fff;
-    position: fixed; /* Fix the side nav to the left side */
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
 .side-nav-header {
     width: 100%;
@@ -74,4 +24,8 @@
     font-weight: bold;
     color: #fff;
     text-transform: capitalize;
+}
+
+p-panelmenu-header-action a {
+    font-size: 12px;
 }

@@ -11,27 +11,31 @@ import { Button, ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { CardModule } from 'primeng/card';
+import { MenubarModule } from 'primeng/menubar';
+import { PanelMenuModule } from 'primeng/panelmenu';
 
 @Component({
   selector: 'app-side-nav',
   standalone: true,
-  imports: [SidebarModule, Button, CardModule],
+  imports: [SidebarModule, Button, CardModule, MenubarModule, PanelMenuModule],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css',
 })
 export class SideNavComponent implements OnInit {
-  @Input() sidebarVisible: boolean = false;
+  @Input() sidebarVisible: boolean = true;
   @Output() onCloseMenu = new EventEmitter<boolean>();
   username:string | null = null;
 
   navigationList = [
     {
-      title: 'Home',
-      link: 'index',
+      label: 'Home',
+      icon: 'pi pi-home',
+      routerLink: ['/home/index'],
     },
     {
-      title: 'Passwords',
-      link: 'password',
+      label: 'Passwords',
+      icon: 'pi pi-lock',
+      routerLink: ['/home/password'],
     }
   ];
 
@@ -46,12 +50,14 @@ export class SideNavComponent implements OnInit {
       if(localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'superadmin') {
         this.navigationList.push(
           {
-            title: 'User',
-            link: 'user',
+            label: 'User',
+            icon: 'pi pi-users',
+            routerLink: ['/home/user'],
           },
           {
-            title: 'Audit Logs',
-            link: 'audit-log'
+            label: 'Audit Logs',
+            icon: 'pi pi-file',
+            routerLink: ['/home/audit-log']
           }
         )
       }
