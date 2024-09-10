@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { error } from 'console';
 
 @Component({
   selector: 'app-passwords',
@@ -33,12 +34,13 @@ export class PasswordsComponent implements OnInit {
   sidebarVisible: boolean = false;
   editEntryId: number | null = null;
   showCopyAction: boolean = false;
+  userList: any[] = [];
 
   constructor(
     private httpService: HttpService,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -82,7 +84,27 @@ export class PasswordsComponent implements OnInit {
   }
 
   onShareEntry() {
-    console.log('onShareEntry');
+    this.getUserList();
+  }
+
+  getUserList() {
+    this.httpService.get('users/list').subscribe(
+      (users) => {
+        if (users.length > 0) {
+          let userDetails: any[] = [];
+          users.forEach((user: any) => {
+            userDetails.push({ label: user.username, value: user.user_id });
+          });
+          this.userList = userDetails
+        }
+        console.log(this.userList);
+      },
+      (error) => {
+        if (error.error.statusCode == 404) {
+          this.router.navigate(['sign-in']);
+        }
+      }
+    );
   }
 
   onDeleteEntry(entry_id: number) {
@@ -104,13 +126,13 @@ export class PasswordsComponent implements OnInit {
     });
   }
 
-  onAddNewEntry(){
+  onAddNewEntry() {
     this.sidebarVisible = true;
     this.editEntryId = null;
     this.showCopyAction = false;
   }
 
-  onClosingSidenav(){
+  onClosingSidenav() {
     this.sidebarVisible = false;
   }
 }

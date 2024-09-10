@@ -187,6 +187,7 @@ export class EditEntryComponent implements OnInit {
   }
 
   getChildFolders() {
+    this.folderDDMValues = [];
     this.httpService.get('folders/child_folder').subscribe(
       (data) => {
         this.childFolderList = data;
