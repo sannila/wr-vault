@@ -24,3 +24,42 @@ a {
   position: relative;
   overflow-y: auto;
 }
+
+.primaryBtn {
+  background-color: blue;
+  color: white;
+  border: 1px solid #3B82F6;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.primaryBtn:hover{
+  background-color: #3B82F6;
+}
+
+.secondaryBtn {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #d5e6f7;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.secondaryBtn:hover{
+  background-color: #d5e6f7;
+}
+
+.dangerBtn {
+  color: #ffffff;
+  background-color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.dangerBtn:hover{
+  background-color: #f18e8e;
+}
