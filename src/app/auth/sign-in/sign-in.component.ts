@@ -71,40 +71,43 @@ export class SignInComponent implements OnInit {
     this.loginError = '';
     if (this.loginForm.valid) {
       console.log('onSubmit', this.loginForm.value);
-      this.httpService
-        .post('users/login', this.loginForm.value)
-        .subscribe(
-          (res) => {
-            if (res) {
-              console.log('res', res);
-              localStorage.setItem('authToken', res.token);
-              localStorage.setItem('email', res.user.email);
-              localStorage.setItem('username', res.user.username);
-              localStorage.setItem('role', res.user.role);
-              localStorage.setItem('user_id', res.user.user_id);
-              this.router.navigate(['home']);
-            }
-          },
-          (error) => {
-            console.log('error', error);
-            this.loginError = error.error.errorMessage;
-            this.submitted = false;
+      this.httpService.post('users/login', this.loginForm.value).subscribe(
+        (res) => {
+          if (res) {
+            console.log('res', res);
+            localStorage.setItem('authToken', res.token);
+            localStorage.setItem('email', res.user.email);
+            localStorage.setItem('username', res.user.username);
+            localStorage.setItem('role', res.user.role);
+            localStorage.setItem('user_id', res.user.user_id);
+            this.router.navigate(['home']);
           }
-        )
+        },
+        (error) => {
+          console.log('error', error);
+          if (error.statusText == 'Unknown Error') {
+            this.loginError = error.statusText;
+          } else {
+            this.loginError = error.error.errorMessage;
+          }
 
-        // .subscribe({
-        //   next: (res) => {
-        //     console.log('res', res);
-        //     localStorage.setItem('authToken', res.token);
-        //     localStorage.setItem('email');
-        //     this.router.navigate(['index']);
-        //   },
-        //   error: (error) => {
-        //     console.log('error', error);
-        //     this.loginError = error.error.errorMessage;
-        //     this.submitted = false;
-        //   },
-        // });
+          this.submitted = false;
+        }
+      );
+
+      // .subscribe({
+      //   next: (res) => {
+      //     console.log('res', res);
+      //     localStorage.setItem('authToken', res.token);
+      //     localStorage.setItem('email');
+      //     this.router.navigate(['index']);
+      //   },
+      //   error: (error) => {
+      //     console.log('error', error);
+      //     this.loginError = error.error.errorMessage;
+      //     this.submitted = false;
+      //   },
+      // });
     }
   }
 }

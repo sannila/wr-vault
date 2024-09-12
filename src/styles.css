@@ -35,7 +35,8 @@ a {
 }
 
 .primaryBtn:hover{
-  background-color: #3B82F6;
+  background-color: white;
+  color: blue;
 }
 
 .secondaryBtn {
@@ -48,7 +49,8 @@ a {
 }
 
 .secondaryBtn:hover{
-  background-color: #d5e6f7;
+  background-color: #475569;
+  color: #f1f5f9;
 }
 
 .dangerBtn {
@@ -61,5 +63,6 @@ a {
 }
 
 .dangerBtn:hover{
-  background-color: #f18e8e;
+  color: #ef4444;
+  background-color: #ffffff;
 }
